@@ -1,0 +1,1 @@
+{"root":["./src/bin.ts","./src/config.ts","./src/index.ts","./src/controllers/authcontroller.ts","./src/controllers/sweetcontroller.ts","./src/router/authrouter.ts","./src/router/sweetrouter.ts"],"version":"5.8.3"}

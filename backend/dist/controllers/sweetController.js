@@ -1,0 +1,17 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.restockSweet = exports.purchaseSweet = exports.deleteSweet = exports.updateSweet = exports.searchSweets = exports.getSweets = exports.addSweet = void 0;
+const addSweet = (req, res) => { };
+exports.addSweet = addSweet;
+const getSweets = (req, res) => { };
+exports.getSweets = getSweets;
+const searchSweets = (req, res) => { };
+exports.searchSweets = searchSweets;
+const updateSweet = (req, res) => { };
+exports.updateSweet = updateSweet;
+const deleteSweet = (req, res) => { };
+exports.deleteSweet = deleteSweet;
+const purchaseSweet = (req, res) => { };
+exports.purchaseSweet = purchaseSweet;
+const restockSweet = (req, res) => { };
+exports.restockSweet = restockSweet;
