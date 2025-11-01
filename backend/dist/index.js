@@ -8,6 +8,6 @@ const express_1 = __importDefault(require("express"));
 const authRouter_1 = require("./router/authRouter");
 const sweetRouter_1 = require("./router/sweetRouter");
 exports.app = (0, express_1.default)();
-exports.app.use(express_1.default.json);
+exports.app.use(express_1.default.json());
 exports.app.use("/api/auth", authRouter_1.authRouter);
 exports.app.use("/api/sweets", sweetRouter_1.sweetRouter);
