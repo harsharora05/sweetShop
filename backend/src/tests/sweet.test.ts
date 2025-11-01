@@ -10,6 +10,8 @@ vi.mock("../utils/db", () => ({
         create: vi.fn(),
         findByIdAndUpdate: vi.fn(),
         findByIdAndDelete: vi.fn(),
+        save: vi.fn(),
+        findById: vi.fn(),
     },
 }));
 
@@ -19,7 +21,7 @@ vi.mock("jsonwebtoken", () => ({
     verify: vi.fn().mockReturnValue({ userId: "mockUserId", role: "ADMIN" }),
 }));
 
-describe("add sweet controller", () => {
+describe("tests for sweets endpoint to add update and delete", () => {
     const mockAdminToken = "admin_token";
     const mockUserToken = "user_token";
 
@@ -144,7 +146,7 @@ describe("add sweet controller", () => {
 
 
 
-describe("testing for sweets search endpoint", () => {
+describe("tests for sweets search endpoint", () => {
     const mockToken = "mock_token";
 
     beforeEach(() => {
@@ -224,4 +226,74 @@ describe("testing for sweets search endpoint", () => {
         expect(res.statusCode).toBe(500);
         expect(res.body.message).toMatch(/server error/i);
     });
+});
+
+describe("tests for sweets purchase endpoint", () => {
+    const mockToken = "user_token";
+
+    beforeEach(() => {
+        vi.resetAllMocks();
+        (verify as any).mockReturnValue({ userId: "1", role: "USER" });
+    });
+
+    it("should return 400 if quantity is missing or invalid", async () => {
+        const res = await request(app)
+            .post("/api/sweets/123/purchase")
+            .set("Authorization", `Bearer ${mockToken}`)
+            .send({ quantity: 0 });
+
+        expect(res.statusCode).toBe(400);
+        expect(res.body.message).toMatch(/greater than 0/i);
+    });
+
+    it("should return 404 if sweet is not found", async () => {
+        (sweetModel.findById as any).mockResolvedValue(null);
+
+        const res = await request(app)
+            .post("/api/sweets/123/purchase")
+            .set("Authorization", `Bearer ${mockToken}`)
+            .send({ quantity: 2 });
+
+        expect(res.statusCode).toBe(404);
+        expect(res.body.message).toMatch(/not found/i);
+    });
+
+    it("should return 400 if stock is insufficient", async () => {
+        (sweetModel.findById as any).mockResolvedValue({
+            _id: "123",
+            name: "Ladoo",
+            quantity: 1,
+            save: vi.fn(),
+        });
+
+        const res = await request(app)
+            .post("/api/sweets/123/purchase")
+            .set("Authorization", `Bearer ${mockToken}`)
+            .send({ quantity: 5 });
+
+        expect(res.statusCode).toBe(400);
+        expect(res.body.message).toMatch(/not enough stock/i);
+    });
+
+    it("should successfully purchase sweets and decrease quantity", async () => {
+        const mockSave = vi.fn().mockResolvedValue(true);
+
+        (sweetModel.findById as any).mockResolvedValue({
+            _id: "123",
+            name: "Ladoo",
+            quantity: 10,
+            save: mockSave,
+        });
+
+        const res = await request(app)
+            .post("/api/sweets/123/purchase")
+            .set("Authorization", `Bearer ${mockToken}`)
+            .send({ quantity: 3 });
+
+        expect(res.statusCode).toBe(200);
+        expect(res.body.message).toMatch(/purchased/i);
+        expect(res.body.remaining).toBe(7);
+        expect(mockSave).toHaveBeenCalled();
+    });
+
 });
