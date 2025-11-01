@@ -140,3 +140,88 @@ describe("add sweet controller", () => {
         expect(res.body.message).toMatch(/deleted/i);
     });
 });
+
+
+
+
+describe("testing for sweets search endpoint", () => {
+    const mockToken = "mock_token";
+
+    beforeEach(() => {
+        vi.resetAllMocks();
+        (verify as any).mockReturnValue({ userId: "123", role: "USER" });
+    });
+
+    it("should search by name", async () => {
+        (sweetModel.find as any).mockResolvedValue([
+            { name: "Ladoo", category: "Indian", price: 100, quantity: 10 },
+        ]);
+
+        const res = await request(app)
+            .get("/api/sweets/search?query=Ladoo")
+            .set("Authorization", `Bearer ${mockToken}`);
+
+        expect(res.statusCode).toBe(200);
+        expect(res.body.sweets).toHaveLength(1);
+        expect(sweetModel.find).toHaveBeenCalledWith(
+            expect.objectContaining({
+                name: expect.any(Object),
+            })
+        );
+    });
+
+    it("should search by category", async () => {
+        (sweetModel.find as any).mockResolvedValue([
+            { name: "Rasgulla", category: "Bengali", price: 80, quantity: 20 },
+        ]);
+
+        const res = await request(app)
+            .get("/api/sweets/search?category=Bengali")
+            .set("Authorization", `Bearer ${mockToken}`);
+
+        expect(res.statusCode).toBe(200);
+        expect(res.body.sweets[0].category).toBe("Bengali");
+    });
+
+    it("should search by price range", async () => {
+        (sweetModel.find as any).mockResolvedValue([
+            { name: "Barfi", category: "Indian", price: 150 },
+        ]);
+
+        const res = await request(app)
+            .get("/api/sweets/search?minPrice=100&maxPrice=200")
+            .set("Authorization", `Bearer ${mockToken}`);
+
+        expect(res.statusCode).toBe(200);
+        expect(sweetModel.find).toHaveBeenCalledWith(
+            expect.objectContaining({
+                price: expect.objectContaining({
+                    $gte: 100,
+                    $lte: 200,
+                }),
+            })
+        );
+    });
+
+    it("should return 404 if no sweets found", async () => {
+        (sweetModel.find as any).mockResolvedValue([]);
+
+        const res = await request(app)
+            .get("/api/sweets/search?query=Chocolate")
+            .set("Authorization", `Bearer ${mockToken}`);
+
+        expect(res.statusCode).toBe(404);
+        expect(res.body.message).toMatch(/no sweets found/i);
+    });
+
+    it("should handle server error", async () => {
+        (sweetModel.find as any).mockRejectedValue(new Error("DB error"));
+
+        const res = await request(app)
+            .get("/api/sweets/search?query=Ladoo")
+            .set("Authorization", `Bearer ${mockToken}`);
+
+        expect(res.statusCode).toBe(500);
+        expect(res.body.message).toMatch(/server error/i);
+    });
+});

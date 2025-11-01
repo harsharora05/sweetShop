@@ -39,7 +39,9 @@ export const getSweets = async (req: myAuthRequest, res: Response) => {
     }
 }
 
-export const searchSweets = (req: myAuthRequest, res: Response) => { }
+export const searchSweets = async (req: myAuthRequest, res: Response) => {
+
+}
 
 
 export const updateSweet = async (req: myAuthRequest, res: Response) => {
