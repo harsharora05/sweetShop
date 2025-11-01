@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Response } from "express";
 import { myAuthRequest } from "../utils/requestInterface";
 import { sweetModel } from "../utils/db";
 import { addSweetSchema } from "../zodSchema/addSweetSchema";
@@ -103,5 +103,36 @@ export const deleteSweet = async (req: myAuthRequest, res: Response) => {
 
 
 
-export const purchaseSweet = (req: myAuthRequest, res: Response) => { }
+export const purchaseSweet = async (req: myAuthRequest, res: Response) => {
+    try {
+        const { id } = req.params;
+        const { quantity } = req.body;
+
+        if (!quantity || quantity <= 0) {
+            return res.status(400).json({ message: "quantity should be greater than 0" });
+        }
+
+        const sweet = await sweetModel.findById(id);
+
+        if (!sweet) {
+            return res.status(404).json({ message: "sweet not found" });
+        }
+
+        if (sweet.quantity < quantity) {
+            return res.status(400).json({ message: "not enough stock is available" });
+        }
+
+        sweet.quantity -= quantity;
+        await sweet.save();
+
+        return res.status(200).json({
+            message: `purchased ${quantity} ${sweet.name} successfully`,
+            remaining: sweet.quantity,
+        });
+    } catch (err) {
+        console.error("purchase sweet error:", err);
+        return res.status(500).json({ message: "server error" });
+    }
+}
+
 export const restockSweet = (req: myAuthRequest, res: Response) => { }
