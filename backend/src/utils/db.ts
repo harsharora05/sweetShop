@@ -9,5 +9,13 @@ const userSchema = new Schema({
 });
 
 
+const sweetSchema = new Schema({
+    name: { type: String },
+    category: { type: String },
+    price: { type: Number },
+    quantity: { type: Number, default: 0 }
+})
 
+
+export const sweetModel = model('Sweet', sweetSchema)
 export const userModel = model('Users', userSchema);
