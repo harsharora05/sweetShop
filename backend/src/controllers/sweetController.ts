@@ -40,7 +40,36 @@ export const getSweets = async (req: myAuthRequest, res: Response) => {
 }
 
 export const searchSweets = async (req: myAuthRequest, res: Response) => {
+    try {
+        const { query, category, minPrice, maxPrice } = req.query;
 
+        const filter: any = {};
+
+        if (query) {
+            filter.name = { $regex: query as string, $options: "i" };
+        }
+
+        if (category) {
+            filter.category = { $regex: category as string, $options: "i" };
+        }
+
+        if (minPrice || maxPrice) {
+            filter.price = {};
+            if (minPrice) filter.price.$gte = Number(minPrice);
+            if (maxPrice) filter.price.$lte = Number(maxPrice);
+        }
+
+        const sweets = await sweetModel.find(filter);
+
+        if (!sweets.length) {
+            return res.status(404).json({ message: "No sweets found" });
+        }
+
+        return res.status(200).json({ sweets });
+    } catch (err) {
+        console.error("searchSweets error:", err);
+        return res.status(500).json({ message: "Server error" });
+    }
 }
 
 
