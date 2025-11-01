@@ -3,8 +3,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.userModel = void 0;
 const mongoose_1 = require("mongoose");
 const userSchema = new mongoose_1.Schema({
-    username: { type: String, required: true },
+    username: { type: String, required: true, unique: true },
     password: { type: String, required: true },
+    role: { type: String, default: "USER" },
     created: { type: Date, default: Date.now }
 });
 exports.userModel = (0, mongoose_1.model)('Users', userSchema);

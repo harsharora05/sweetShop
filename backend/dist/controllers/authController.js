@@ -13,6 +13,9 @@ exports.login = exports.register = void 0;
 const db_1 = require("../utils/db");
 const bcrypt_1 = require("bcrypt");
 const registerSchema_1 = require("../zodSchema/registerSchema");
+const loginSchema_1 = require("../zodSchema/loginSchema");
+const jsonwebtoken_1 = require("jsonwebtoken");
+const config_1 = require("../config");
 const register = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const parsed = registerSchema_1.registerSchema.safeParse(req.body);
@@ -35,5 +38,32 @@ const register = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.register = register;
-const login = (req, res) => { };
+const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    try {
+        const parseResult = loginSchema_1.loginSchema.safeParse(req.body);
+        if (!parseResult.success) {
+            const message = ((_a = parseResult.error.issues[0]) === null || _a === void 0 ? void 0 : _a.message) || "Invalid input";
+            return res.status(400).json({ message });
+        }
+        const { username, password } = parseResult.data;
+        const user = yield db_1.userModel.findOne({ username });
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        const isPasswordValid = yield (0, bcrypt_1.compare)(password, user.password);
+        if (!isPasswordValid) {
+            return res.status(401).json({ message: "Invalid password" });
+        }
+        const token = (0, jsonwebtoken_1.sign)({
+            userId: user._id,
+            role: user.role
+        }, config_1.JWT_SECRET);
+        return res.status(200).json({ message: "Login successful", token });
+    }
+    catch (err) {
+        console.error(err);
+        return res.status(500).json({ message: "Internal Server Error" });
+    }
+});
 exports.login = login;

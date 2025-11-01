@@ -13,6 +13,7 @@ vi.mock("../utils/db", () => ({
 
 vi.mock("bcrypt", () => ({
     hash: vi.fn(),
+    compare: vi.fn(),
 }));
 
 
