@@ -297,3 +297,54 @@ describe("tests for sweets purchase endpoint", () => {
     });
 
 });
+
+
+
+
+
+describe("tests for restock sweet endpoint", () => {
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
+
+    it("should return 400 if quantity is missing or invalid", async () => {
+        const res = await request(app)
+            .post("/api/sweets/123/restock")
+            .send({ quantity: 0 });
+
+        expect(res.statusCode).toBe(400);
+        expect(res.body.message).toMatch(/greater than 0/i);
+    });
+
+    it("should return 404 if sweet not found", async () => {
+        (sweetModel.findById as any).mockResolvedValueOnce(null);
+
+        const res = await request(app)
+            .post("/api/sweets/123/restock")
+            .send({ quantity: 10 });
+
+        expect(res.statusCode).toBe(404);
+        expect(res.body.message).toMatch(/not found/i);
+    });
+
+    it("should restock sweet and increase quantity", async () => {
+        const mockSweet = {
+            _id: "1",
+            name: "Ladoo",
+            quantity: 5,
+            save: vi.fn().mockResolvedValue(true),
+        };
+
+        (sweetModel.findById as any).mockResolvedValueOnce(mockSweet);
+
+        const res = await request(app)
+            .post("/api/sweets/1/restock")
+            .send({ quantity: 5 });
+
+        expect(mockSweet.quantity).toBe(10);
+        expect(mockSweet.save).toHaveBeenCalled();
+        expect(res.statusCode).toBe(200);
+        expect(res.body.message).toMatch(/restocked/i);
+    });
+
+});
