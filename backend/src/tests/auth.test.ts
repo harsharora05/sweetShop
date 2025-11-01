@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import request from "supertest";
 import { app } from "..";
 import { userModel } from "../utils/db";
-import { hash } from "bcrypt";
+import { compare, hash } from "bcrypt";
 
 vi.mock("../utils/db", () => ({
     userModel: {
@@ -97,4 +97,77 @@ describe("testing register user end point", () => {
         expect(res.body.message).toMatch(/success/i);
     });
 
+});
+
+
+
+
+
+describe("testing login user endpoint", () => {
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
+
+    it("should return 400 if fields are missing", async () => {
+        const res = await request(app)
+            .post("/api/auth/login")
+            .send({ username: "", password: "" });
+
+        expect(res.statusCode).toBe(400);
+        expect(res.body.message).toMatch(/required/i);
+    });
+
+    it("should return 404 if user does not exist", async () => {
+        (userModel.findOne as any).mockResolvedValueOnce(null);
+
+        const res = await request(app)
+            .post("/api/auth/login")
+            .send({
+                username: "nonexistent",
+                password: "Test@123",
+            });
+
+        expect(res.statusCode).toBe(404);
+        expect(res.body.message).toMatch(/not found/i);
+    });
+
+
+    it("should return 401 if password is incorrect", async () => {
+        (userModel.findOne as any).mockResolvedValueOnce({
+            username: "testuser",
+            password: "hashedPass",
+        });
+        (compare as any).mockResolvedValueOnce(false);
+
+        const res = await request(app)
+            .post("/api/auth/login")
+            .send({
+                username: "testuser",
+                password: "wrongPass",
+            });
+
+        expect(res.statusCode).toBe(401);
+        expect(res.body.message).toMatch(/invalid password/i);
+    });
+
+
+    it("should return 200 and success message when credentials are correct", async () => {
+        (userModel.findOne as any).mockResolvedValueOnce({
+            _id: "123",
+            username: "testuser",
+            password: "hashedPass",
+        });
+        (compare as any).mockResolvedValueOnce(true);
+
+        const res = await request(app)
+            .post("/api/auth/login")
+            .send({
+                username: "testuser",
+                password: "Test@123",
+            });
+
+        expect(res.statusCode).toBe(200);
+        expect(res.body.message).toMatch(/login successful/i);
+        expect(res.body).toHaveProperty("token");
+    });
 });
