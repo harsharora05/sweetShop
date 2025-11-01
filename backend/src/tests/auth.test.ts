@@ -10,7 +10,7 @@ describe("testing register user end point", () => {
     it("should return 400 if fields are missing ", async () => {
         const res = await request(app)
             .post("/api/auth/register")
-            .send({ username: "", password: "TestTest123@", confirmPassword: "TestTest123@" });
+            .send({ username: "", password: "TestTest123", confirmPassword: "TestTest123@" });
         expect(res.statusCode).toBe(400);
         expect(res.body.message).toMatch(/required/i)
     });
