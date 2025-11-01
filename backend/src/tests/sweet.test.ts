@@ -4,7 +4,20 @@ import { sweetModel } from "../utils/db";
 import request from "supertest";
 import { app } from "..";
 
+vi.mock("../utils/db", () => ({
+    sweetModel: {
+        find: vi.fn(),
+        create: vi.fn(),
+        findByIdAndUpdate: vi.fn(),
+        findByIdAndDelete: vi.fn(),
+    },
+}));
 
+
+vi.mock("jsonwebtoken", () => ({
+    sign: vi.fn().mockReturnValue("mocked_token"),
+    verify: vi.fn().mockReturnValue({ userId: "mockUserId", role: "ADMIN" }),
+}));
 
 describe("add sweet controller", () => {
     const mockAdminToken = "admin_token";
@@ -32,7 +45,7 @@ describe("add sweet controller", () => {
         });
 
         const res = await request(app)
-            .post("/api/sweets")
+            .post("/api/sweets/")
             .set("Authorization", `Bearer ${mockAdminToken}`)
             .send({
                 name: "Ladoo",
@@ -49,7 +62,7 @@ describe("add sweet controller", () => {
 
     it("should deny access if user is not ADMIN", async () => {
         const res = await request(app)
-            .post("/api/sweets")
+            .post("/api/sweets/")
             .set("Authorization", `Bearer ${mockUserToken}`)
             .send({
                 name: "Barfi",
@@ -65,7 +78,7 @@ describe("add sweet controller", () => {
 
     it("should return 400 if fields are missing", async () => {
         const res = await request(app)
-            .post("/api/sweets")
+            .post("/api/sweets/")
             .set("Authorization", `Bearer ${mockAdminToken}`)
             .send({
                 name: "",
@@ -78,6 +91,7 @@ describe("add sweet controller", () => {
     });
 
 
+
     it("should return all sweets for logged-in users", async () => {
         (sweetModel.find as any).mockResolvedValue([
             { name: "Ladoo", category: "Indian", price: 100, quantity: 20 },
@@ -85,13 +99,14 @@ describe("add sweet controller", () => {
         ]);
 
         const res = await request(app)
-            .get("/api/sweets")
+            .get("/api/sweets/")
             .set("Authorization", `Bearer ${mockUserToken}`);
 
         expect(res.statusCode).toBe(200);
         expect(res.body.sweets).toHaveLength(2);
         expect(sweetModel.find).toHaveBeenCalled();
     });
+
 
 
     it("should allow ADMIN to update a sweet", async () => {
@@ -111,6 +126,7 @@ describe("add sweet controller", () => {
         expect(res.statusCode).toBe(200);
         expect(res.body.message).toMatch(/updated/i);
     });
+
 
 
     it("should allow ADMIN to delete a sweet", async () => {

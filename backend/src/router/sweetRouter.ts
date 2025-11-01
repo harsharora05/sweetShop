@@ -6,15 +6,15 @@ import { adminRoleMiddleware } from "../middleware/adminRoleMiddleware";
 export const sweetRouter = Router();
 
 // sweets routes
-sweetRouter.post("/", userMiddleware, adminRoleMiddleware, addSweet)
-sweetRouter.get("/", getSweets)
-sweetRouter.get("/search", searchSweets)
-sweetRouter.put("/:id", updateSweet)
-sweetRouter.delete("/:id", deleteSweet)
+sweetRouter.post("/", userMiddleware, adminRoleMiddleware(), addSweet)
+sweetRouter.get("/", userMiddleware, getSweets)
+sweetRouter.get("/search", userMiddleware, searchSweets)
+sweetRouter.put("/:id", userMiddleware, adminRoleMiddleware(), updateSweet)
+sweetRouter.delete("/:id", userMiddleware, adminRoleMiddleware(), deleteSweet)
 
 // inventory routes
-sweetRouter.post(":id/purchase", purchaseSweet)
-sweetRouter.post(":id/restock", restockSweet)
+sweetRouter.post(":id/purchase", userMiddleware, purchaseSweet)
+sweetRouter.post(":id/restock", userMiddleware, adminRoleMiddleware, restockSweet)
 
 
 
