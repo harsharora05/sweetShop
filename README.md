@@ -30,7 +30,7 @@ The project demonstrates complete CRUD operations, JWT-based authentication, RES
 
 | Layer | Technologies |
 |-------|---------------|
-| **Frontend** | React, TypeScript, Zustand, TailwindCSS, React Router, React Toastify |
+| **Frontend** | React, TypeScript, Zustand, TailwindCSS, React Toastify |
 | **Backend** | Node.js, Express.js, MongoDB, Mongoose, JWT |
 | **Deployment** | Backend (AWS EC2) • Frontend (Vercel) |
 
