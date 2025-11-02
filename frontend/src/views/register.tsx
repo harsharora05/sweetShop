@@ -16,10 +16,10 @@ export const Register = () => {
         const cpass = confirmPass.current?.value;
 
         if (uname!.length < 3) {
-            err.push("username should have length gt 3 ")
+            err.push("username should have length greater than 3 ")
         }
         if (pass!.length < 6) {
-            err.push("password should have length gt 6 ")
+            err.push("password should have length greater than 6 ")
         }
 
         if (!(pass!.match(/[^a-zA-Z0-9_]/))) {
