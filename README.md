@@ -186,7 +186,7 @@ https://github.com/harsharora05/sweetShop.git
 ## 🧑‍💻 Author
 **Harsh Arora**  
 MCA Student @ MIT Manipal  
-📧 harsharora2407@gmail.com  
+📧 harsh.official995@gmail.com
 
 ---
 
