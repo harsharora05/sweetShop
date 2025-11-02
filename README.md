@@ -124,7 +124,7 @@ Expected Output:
 PASS  tests/user.test.ts
 PASS  tests/sweet.test.ts
 Test Suites: 2 passed, 2 total
-Tests:       10 passed, 10 total
+Tests:       28 passed, 28 total
 ```
 
 📄 Test report Image included at:  
