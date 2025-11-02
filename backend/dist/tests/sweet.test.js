@@ -246,10 +246,12 @@ vitest_1.vi.mock("jsonwebtoken", () => ({
 (0, vitest_1.describe)("tests for restock sweet endpoint", () => {
     (0, vitest_1.beforeEach)(() => {
         vitest_1.vi.clearAllMocks();
+        jsonwebtoken_1.verify.mockReturnValue({ userId: "1", role: "ADMIN" });
     });
     (0, vitest_1.it)("should return 400 if quantity is missing or invalid", () => __awaiter(void 0, void 0, void 0, function* () {
         const res = yield (0, supertest_1.default)(__1.app)
             .post("/api/sweets/123/restock")
+            .set("Authorization", "Bearer faketoken")
             .send({ quantity: 0 });
         (0, vitest_1.expect)(res.statusCode).toBe(400);
         (0, vitest_1.expect)(res.body.message).toMatch(/greater than 0/i);
@@ -258,6 +260,7 @@ vitest_1.vi.mock("jsonwebtoken", () => ({
         db_1.sweetModel.findById.mockResolvedValueOnce(null);
         const res = yield (0, supertest_1.default)(__1.app)
             .post("/api/sweets/123/restock")
+            .set("Authorization", "Bearer faketoken")
             .send({ quantity: 10 });
         (0, vitest_1.expect)(res.statusCode).toBe(404);
         (0, vitest_1.expect)(res.body.message).toMatch(/not found/i);
@@ -272,6 +275,7 @@ vitest_1.vi.mock("jsonwebtoken", () => ({
         db_1.sweetModel.findById.mockResolvedValueOnce(mockSweet);
         const res = yield (0, supertest_1.default)(__1.app)
             .post("/api/sweets/1/restock")
+            .set("Authorization", "Bearer faketoken")
             .send({ quantity: 5 });
         (0, vitest_1.expect)(mockSweet.quantity).toBe(10);
         (0, vitest_1.expect)(mockSweet.save).toHaveBeenCalled();
