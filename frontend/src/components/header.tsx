@@ -1,8 +1,11 @@
 import { useViewStore } from "../../store/viewStore";
 import { useAuthStore } from "../../store/authStore";
+import { useModalStore } from "../../store/modalStore";
+
 export default function Header() {
     const { changeView } = useViewStore();
     const { isLogin, isAdmin, logout } = useAuthStore();
+    const { openModal } = useModalStore();
 
     return <header className="w-full bg-white shadow-sm sticky top-0 z-50">
         <div className="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-3 px-4 py-3">
@@ -21,7 +24,7 @@ export default function Header() {
 
                 {isLogin && isAdmin && (
                     <button
-                        className="px-4 py-2 rounded-lg bg-green-500 text-white hover:bg-green-600 transition text-sm sm:text-base w-full sm:w-auto"
+                        className="px-4 py-2 rounded-lg bg-green-500 text-white hover:bg-green-600 transition text-sm sm:text-base w-full sm:w-auto" onClick={() => openModal()}
                     >Add Sweet</button>
                 )}
                 {isLogin && <button onClickCapture={() => logout()} className="px-4 py-2 rounded-lg border border-pink-500 text-pink-600 hover:bg-pink-50 transition text-sm sm:text-base w-full sm:w-auto" onClick={() => changeView("login")}>

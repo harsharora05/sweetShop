@@ -1,4 +1,4 @@
-import { useRef, type SetStateAction } from "react";
+import { useRef, } from "react";
 import { toast } from "react-toastify";
 import { useViewStore } from "../../store/viewStore";
 import { useAuthStore } from "../../store/authStore";

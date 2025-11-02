@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Login } from "./views/login";
 import { Register } from "./views/register";
 import { Home } from "./views/home";
