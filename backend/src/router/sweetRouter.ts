@@ -14,7 +14,7 @@ sweetRouter.delete("/:id", userMiddleware, adminRoleMiddleware(), deleteSweet)
 
 // inventory routes
 sweetRouter.post("/:id/purchase", userMiddleware, purchaseSweet)
-sweetRouter.post("/:id/restock", userMiddleware, adminRoleMiddleware, restockSweet)
+sweetRouter.post("/:id/restock", userMiddleware, adminRoleMiddleware(), restockSweet)
 
 
 

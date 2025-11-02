@@ -305,11 +305,13 @@ describe("tests for sweets purchase endpoint", () => {
 describe("tests for restock sweet endpoint", () => {
     beforeEach(() => {
         vi.clearAllMocks();
+        (verify as any).mockReturnValue({ userId: "1", role: "ADMIN" });
     });
 
     it("should return 400 if quantity is missing or invalid", async () => {
         const res = await request(app)
             .post("/api/sweets/123/restock")
+            .set("Authorization", "Bearer faketoken")
             .send({ quantity: 0 });
 
         expect(res.statusCode).toBe(400);
@@ -321,6 +323,7 @@ describe("tests for restock sweet endpoint", () => {
 
         const res = await request(app)
             .post("/api/sweets/123/restock")
+            .set("Authorization", "Bearer faketoken")
             .send({ quantity: 10 });
 
         expect(res.statusCode).toBe(404);
@@ -339,6 +342,7 @@ describe("tests for restock sweet endpoint", () => {
 
         const res = await request(app)
             .post("/api/sweets/1/restock")
+            .set("Authorization", "Bearer faketoken")
             .send({ quantity: 5 });
 
         expect(mockSweet.quantity).toBe(10);
