@@ -150,6 +150,10 @@ Tests:       10 passed, 10 total
 <img width="1440" height="834" alt="Screenshot 2025-11-02 at 8 06 49 PM" src="https://github.com/user-attachments/assets/6f2d9e1c-55d6-440c-8b69-9e0e1b64e104" />
 
 ---
+| User Type | Testing Credentials |
+|-------|---------------|
+| **Admin** | username: admin password: admin123@ |
+| **User** | username: user password: user123@|
 
 ## 🤖 My AI Usage
 
