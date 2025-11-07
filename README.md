@@ -32,7 +32,6 @@ The project demonstrates complete CRUD operations, JWT-based authentication, RES
 |-------|---------------|
 | **Frontend** | React, TypeScript, Zustand, TailwindCSS, React Toastify |
 | **Backend** | Node.js, Express.js, MongoDB, Mongoose, JWT |
-| **Deployment** | Backend (AWS EC2) • Frontend (Vercel) |
 
 ---
 
@@ -166,14 +165,6 @@ I used **ChatGPT (GPT-5)** to:
 All backend logic, authentication flow, frontend integration, and database setup were implemented manually by **me (Harsh Arora)**.
 
 ---
-
-## 🌍 Deployment Links
-
-| Service | URL |
-|----------|-----|
-| **Frontend** | [https://sweetfrontend.glitchharsh.com/](https://sweetfrontend.glitchharsh.com/) |
-| **Backend** | [https://sweetbackend.glitchharsh.com/](https://sweetbackend.glitchharsh.com/) |
-
 ---
 
 ## 📦 Public Repository
